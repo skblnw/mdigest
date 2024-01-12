@@ -1,7 +1,8 @@
 import numpy as np
 from sklearn import svm
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score
+import matplotlib.pyplot as plt
 
 # Load your dataset
 def load_data(filename):
@@ -29,30 +30,36 @@ def svm_stratified_fold_cross_validation(data_filename):
     # Define Stratified 5-Fold cross validation
     skf = StratifiedKFold(n_splits=5)
 
-    # Initialize accuracy list
+    # Initialize accuracy and AUC lists
     accuracies = []
+    auc_scores = []
 
     # Perform Stratified 5-Fold cross-validation
     for train_index, test_index in skf.split(X, y):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
-        # Create SVM classifier
-        clf = svm.SVC(kernel='linear')
+        # Create SVM classifier with probability estimation
+        clf = svm.SVC(kernel='linear', probability=True)
 
         # Train the model
         clf.fit(X_train, y_train)
 
-        # Make predictions
+        # Make predictions and compute accuracy
         y_pred = clf.predict(X_test)
-
-        # Calculate accuracy
         accuracy = accuracy_score(y_test, y_pred)
         accuracies.append(accuracy)
-        print(f"Fold accuracy: {accuracy}")
 
-    # Print average accuracy
+        # Compute AUC-ROC
+        y_scores = clf.predict_proba(X_test)[:, 1]
+        auc_score = roc_auc_score(y_test, y_scores)
+        auc_scores.append(auc_score)
+
+        print(f"Fold accuracy: {accuracy}, AUC: {auc_score}")
+
+    # Print average accuracy and AUC
     print(f"Average Accuracy: {np.mean(accuracies)}")
+    print(f"Average AUC: {np.mean(auc_scores)}")
 
 # Example usage
 svm_stratified_fold_cross_validation('gcc_submatrix.txt')
