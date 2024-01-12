@@ -4,13 +4,14 @@ import seaborn as sns
 
 def extract_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path):
     def plot_heatmap(matrix):
-        plt.figure(figsize=(3, 12))
+        plt.figure(figsize=(2,8))
         sns.heatmap(matrix, annot=False, cmap='viridis')
-        plt.title("Heatmap of Extracted Submatrix")
-        plt.xlabel("Residue Index Protein 2")
-        plt.ylabel("Residue Index Protein 1")
+        plt.xlabel("Residues")
+        plt.ylabel("Residues")
         # plt.colorbar(label="Distance")
-        plt.show()
+        # plt.show()
+        plt.tight_layout()
+        plt.savefig('test.pdf')
 
     with h5py.File(hdf5_file_path, 'r') as file:
         def recursively_read_hdf5_group(hdf_group, indent_level=0):

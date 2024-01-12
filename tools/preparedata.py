@@ -99,10 +99,11 @@ class DynCorrExtractor:
         output_file_name = f'{metrics}_{self.submatrix_file_name}'
 
         def plot_heatmap(matrix, figure_file_name):
-            plt.figure(figsize=(10, 40))
+            plt.figure(figsize=(6, 24))
             sns.heatmap(matrix, annot=False, cmap='viridis')
-            plt.xlabel("Residue Index Protein 2")
-            plt.ylabel("Residue Index Protein 1")
+            plt.xlabel("Residues")
+            plt.ylabel("Residues")
+            plt.tight_layout()
             plt.savefig(figure_file_name)
             # plt.show()
 
