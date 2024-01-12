@@ -1,5 +1,7 @@
 import h5py
 
+h5file = 'corr/mdigest_results/dyncorr_results_gcc_allreplicas.h5'
+
 # Open the HDF5 file
 with h5py.File(h5file, 'r') as file:
     # List all groups
@@ -11,5 +13,3 @@ with h5py.File(h5file, 'r') as file:
 
     # Now, data contains the data stored in the first group.
     # You can process this data as needed.
-
-h5file = 'dyncorr_results.h5'
