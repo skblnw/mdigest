@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn import svm
 from sklearn.model_selection import StratifiedKFold
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
 
 # Load your dataset
@@ -56,6 +56,16 @@ def svm_stratified_fold_cross_validation(data_filename):
         auc_scores.append(auc_score)
 
         print(f"Fold accuracy: {accuracy}, AUC: {auc_score}")
+
+        # Plot ROC curve
+        fpr, tpr, thresholds = roc_curve(y_test, y_scores)
+        plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {auc:.2f})')
+        plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend()
+        plt.show()
 
     # Print average accuracy and AUC
     print(f"Average Accuracy: {np.mean(accuracies)}")
