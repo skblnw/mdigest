@@ -1,6 +1,6 @@
 import h5py
 
-def extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path):
+def extract_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path):
     with h5py.File(hdf5_file_path, 'r') as file:
         def recursively_read_hdf5_group(hdf_group, indent_level=0):
             for key in hdf_group.keys():
@@ -22,8 +22,10 @@ def extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval
                 elif isinstance(item, h5py.Group):
                     # Recursively read group
                     recursively_read_hdf5_group(item, indent_level + 1)
+        return submatrix
 
-        recursively_read_hdf5_group(file)
+        submatrix = recursively_read_hdf5_group(file)
+
     return submatrix
 
 # Example usage
@@ -32,7 +34,7 @@ protein1_interval = (0, 374)  # Replace with the residue interval for protein 1
 protein2_interval = (375, 384)  # Replace with the residue interval for protein 2
 output_text_file_path = 'output_matrix.txt'  # Replace with your desired output text file path
 
-submatrix = extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path)
+submatrix = extract_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path)
 
 import matplotlib.pyplot as plt
 import seaborn as sns
