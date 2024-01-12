@@ -24,6 +24,7 @@ def extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval
                     recursively_read_hdf5_group(item, indent_level + 1)
 
         recursively_read_hdf5_group(file)
+    return submatrix
 
 # Example usage
 hdf5_file_path = 'corr/mdigest_results/dyncorr_results_gcc_allreplicas.h5'  # Replace with your HDF5 file path
@@ -31,4 +32,18 @@ protein1_interval = (0, 374)  # Replace with the residue interval for protein 1
 protein2_interval = (375, 384)  # Replace with the residue interval for protein 2
 output_text_file_path = 'output_matrix.txt'  # Replace with your desired output text file path
 
-extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path)
+submatrix = extract_distance_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_text_file_path)
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def plot_heatmap(matrix, output_image_file_path):
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(matrix, annot=False, cmap='viridis')
+    plt.title("Heatmap of Extracted Submatrix")
+    plt.xlabel("Residue Index Protein 2")
+    plt.ylabel("Residue Index Protein 1")
+    plt.colorbar(label="Distance")
+    plt.show()
+
+plot_heatmap(submatrix)
