@@ -99,9 +99,8 @@ class DynCorrExtractor:
         output_file_name = f'{metrics}_{self.submatrix_file_name}'
 
         def plot_heatmap(matrix, figure_file_name):
-            plt.figure(figsize=(3, 12))
+            plt.figure(figsize=(10, 40))
             sns.heatmap(matrix, annot=False, cmap='viridis')
-            plt.title("Heatmap of Extracted Submatrix")
             plt.xlabel("Residue Index Protein 2")
             plt.ylabel("Residue Index Protein 1")
             plt.savefig(figure_file_name)
@@ -120,7 +119,12 @@ class DynCorrExtractor:
 
                         # Save the extracted submatrix to a text file
                         with open(output_file_name, 'a') as output_file:
-                            all_elements = ' '.join(map(str, submatrix.ravel()))
+                            if segment == 'eq':
+                                all_elements = '1 ' + ' '.join(map(str, submatrix.ravel()))
+                            elif segment == 'neq':
+                                all_elements = '0 ' + ' '.join(map(str, submatrix.ravel()))
+                            else:
+                                raise ValueError("Segment must be 'eq' or 'neq'.")
                             output_file.write(all_elements + '\n')
                     elif isinstance(item, h5py.Group):
                         # Recursively read group
