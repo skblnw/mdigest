@@ -59,22 +59,12 @@ class DynCorrExtractor:
             os.makedirs(trajdir)
 
         for i, indices in enumerate(self.random_indices_eq):
-            if i == 0:
-                with open(f'eq_{self.submatrix_file_name}', 'w') as output_file:
-                    output_file.write('\n')
-            else:
-                continue
             self.write_trajectory_and_log(trajdir, indices, 'eq', i + 1)
             self.perform_computation(trajdir, 'eq', i + 1)
             self.extract_matrix('distances', 'eq', i + 1)
             self.extract_matrix('gcc', 'eq', i + 1)
 
         for i, indices in enumerate(self.random_indices_neq):
-            if i == 0:
-                with open(f'neq_{self.submatrix_file_name}', 'w') as output_file:
-                    output_file.write('\n')
-            else:
-                continue
             self.write_trajectory_and_log(trajdir, indices, 'neq', i + 1)
             self.perform_computation(trajdir, 'neq', i + 1)
             self.extract_matrix('distances', 'neq', i + 1)
@@ -107,6 +97,12 @@ class DynCorrExtractor:
 
         figure_file_name = f'{savedir}/dyncorr_results_{metrics}_allreplicas.pdf'
         output_file_name = f'{metrics}_{self.submatrix_file_name}'
+
+        if set_number == 0:
+            with open(output_file_name, 'w') as output_file:
+                output_file.write('\n')
+        else:
+            pass
 
         def plot_heatmap(matrix, figure_file_name):
             plt.figure(figsize=(6, 24))
