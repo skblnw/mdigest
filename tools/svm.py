@@ -2,6 +2,8 @@ import numpy as np
 from sklearn import svm
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
+from sklearn.metrics import roc_auc_score, roc_curve
+import matplotlib.pyplot as plt
 
 # Load your dataset
 def load_data(filename):
@@ -50,6 +52,23 @@ def svm_fold_cross_validation(data_filename):
         accuracy = accuracy_score(y_test, y_pred)
         accuracies.append(accuracy)
         print(f"Fold accuracy: {accuracy}")
+
+        # Predict probabilities
+        y_scores = model.predict_proba(X_test)[:, 1]
+
+        # Compute ROC AUC
+        auc = roc_auc_score(y_test, y_scores)
+        print(f"AUC: {auc}")
+
+        # Plot ROC curve
+        fpr, tpr, thresholds = roc_curve(y_test, y_scores)
+        plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {auc:.2f})')
+        plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Receiver Operating Characteristic (ROC) Curve')
+        plt.legend()
+        plt.show()
 
     # Print average accuracy
     print(f"Average Accuracy: {np.mean(accuracies)}")
