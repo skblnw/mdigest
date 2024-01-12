@@ -18,26 +18,31 @@ num_frames_neq = len(u.trajectory) - num_frames_eq
 num_selected_frames = 10  # Adjust as needed
 
 # Create random sets of indices for each segment
-random_indices_eq = [random.sample(range(num_frames_eq), num_selected_frames) for _ in range(10)]
-random_indices_neq = [random.sample(range(num_frames_eq, len(u.trajectory)), num_selected_frames) for _ in range(10)]
+random_indices_eq = [random.sample(range(num_frames_eq), num_selected_frames) for _ in range(100)]
+random_indices_neq = [random.sample(range(num_frames_eq, len(u.trajectory)), num_selected_frames) for _ in range(100)]
 
-# Function to write selected frames to a new trajectory and record indices
-def write_trajectory_and_record(indices, segment, set_number):
+# Initialize the log file
+log_file_name = 'frame_indices_log.txt'
+with open(log_file_name, 'w') as log_file:
+    log_file.write("Log of frames used for each trajectory\n")
+    log_file.write("=====================================\n\n")
+
+# Function to write selected frames to a new trajectory and append log
+def write_trajectory_and_log(indices, segment, set_number):
     file_name = f'{segment}_set_{set_number}.xtc'
     with XTCWriter(file_name, n_atoms=u.atoms.n_atoms) as W:
         for index in sorted(indices):
             u.trajectory[index]
             W.write(u)
-    # Record the indices used
-    with open(f'{segment}_set_{set_number}_frames.txt', 'w') as f:
-        f.write(f'Frames used for {file_name}:\n')
-        f.write(', '.join(map(str, sorted(indices))))
+    # Append to the log file
+    with open(log_file_name, 'a') as log_file:
+        log_file.write(f'Frames used for {file_name}: {sorted(indices)}\n')
 
-# Create new trajectories and record frame indices for each set of indices
+# Create new trajectories and log frame indices for each set of indices
 for i, indices in enumerate(random_indices_eq):
-    write_trajectory_and_record(indices, 'eq', i + 1)
+    write_trajectory_and_log(indices, 'eq', i + 1)
 
 for i, indices in enumerate(random_indices_neq):
-    write_trajectory_and_record(indices, 'neq', i + 1)
+    write_trajectory_and_log(indices, 'neq', i + 1)
 
-print("New trajectories for eq and neq segments have been created, along with records of the frames used.")
+print("New trajectories for eq and neq segments have been created, and the frames used are logged in 'frame_indices_log.txt'.")
