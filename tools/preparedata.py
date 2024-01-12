@@ -18,7 +18,7 @@ import seaborn as sns
 class DynCorrExtractor:
     """General purpose class handling computation and extraction of different correlation metrics from atomic displacements sampled over MD trajectories."""
 
-    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, num_samples=1):
+    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, num_samples=100):
         # Initialize parameters
         self.topology_file = topology_file
         self.trajectory_file = trajectory_file
