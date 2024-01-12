@@ -5,7 +5,7 @@ import mdigest.core.savedata as sd
 import os
 
 topology_path = 'new_ionized.prot.pdb'
-trajectory_paths = ['eq_set_1.xtc', 'neq_set_1.xtc']  # List of trajectories
+trajectory_paths = ['eq_set_9.xtc', 'neq_set_9.xtc']  # List of trajectories
 output_directory = 'corr'
 
 mds = MDS()
