@@ -40,7 +40,7 @@ def svm_fold_cross_validation(data_filename):
         y_train, y_test = y[train_index], y[test_index]
 
         # Create SVM classifier
-        clf = svm.SVC(kernel='linear')
+        clf = svm.SVC(kernel='linear', probability=True)
 
         # Train the model
         clf.fit(X_train, y_train)
@@ -54,7 +54,7 @@ def svm_fold_cross_validation(data_filename):
         print(f"Fold accuracy: {accuracy}")
 
         # Predict probabilities
-        y_scores = model.predict_proba(X_test)[:, 1]
+        y_scores = clf.predict_proba(X_test)[:, 1]
 
         # Compute ROC AUC
         auc = roc_auc_score(y_test, y_scores)
