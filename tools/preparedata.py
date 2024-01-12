@@ -11,11 +11,14 @@ from mdigest.core.parsetrajectory import MDS
 from mdigest.core.correlation import DynCorr
 import mdigest.core.savedata as sd
 import os
+import h5py
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 class DynCorrExtractor:
     """General purpose class handling computation and extraction of different correlation metrics from atomic displacements sampled over MD trajectories."""
 
-    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, num_samples=10):
+    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, num_samples=1):
         # Initialize parameters
         self.topology_file = topology_file
         self.trajectory_file = trajectory_file
@@ -64,8 +67,8 @@ class DynCorrExtractor:
         for i, indices in enumerate(self.random_indices_neq):
             self.write_trajectory_and_log(trajdir, indices, 'neq', i + 1)
             self.perform_computation(trajdir, 'neq', i + 1)
-            self.extract_matrix('distances', 'eq', i + 1)
-            self.extract_matrix('gcc', 'eq', i + 1)
+            self.extract_matrix('distances', 'neq', i + 1)
+            self.extract_matrix('gcc', 'neq', i + 1)
 
         print("New trajectories for eq and neq segments have been created, and the frames used are logged.")
 
@@ -92,8 +95,8 @@ class DynCorrExtractor:
         if not os.path.exists(savedir):
             os.makedirs(savedir)
 
-        figure_file_name = os.path.join(savedir, 'dyncorr_results_', metrics, '_allreplicas.pdf')
-        output_file_name = os.path.join(metrics, '_', self.submatrix_file_name)
+        figure_file_name = f'{savedir}/dyncorr_results_{metrics}_allreplicas.pdf'
+        output_file_name = f'{metrics}_{self.submatrix_file_name}'
 
         def plot_heatmap(matrix, figure_file_name):
             plt.figure(figsize=(3, 12))
@@ -104,7 +107,7 @@ class DynCorrExtractor:
             plt.savefig(figure_file_name)
             # plt.show()
 
-        with h5py.File(os.path.join(savedir, 'dyncorr_results_', metrics, '_allreplicas.h5'), 'r') as file:
+        with h5py.File(f'{savedir}/dyncorr_results_{metrics}_allreplicas.h5', 'r') as file:
             def recursively_read_hdf5_group(hdf_group, indent_level=0):
                 for key in hdf_group.keys():
                     item = hdf_group[key]
