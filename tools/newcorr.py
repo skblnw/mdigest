@@ -16,7 +16,7 @@ mds.set_selection('protein and name CA', 'protein')
 mds.stride_trajectory(initial=0, final=-1, step=1)
 
 dyncorr = DynCorr(mds)
-dyncorr.parse_dynamics(scale=True, normalize=True, LMI='gaussian', MI='None', DCC=True, PCC=True)
+dyncorr.parse_dynamics(scale=True, normalize=True, LMI='gaussian', MI='None', DCC=False, PCC=True)
 
 savedir = os.path.join(output_directory, 'mdigest_results')
 if not os.path.exists(savedir):
