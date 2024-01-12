@@ -21,7 +21,7 @@ def split_features_labels(data):
     return np.array(features), np.array(labels)
 
 # Main function for SVM with Stratified 5-Fold cross-validation
-def svm_stratified_5_fold_cross_validation(data_filename):
+def svm_stratified_fold_cross_validation(data_filename):
     # Load and prepare data
     data = load_data(data_filename)
     X, y = split_features_labels(data)
@@ -55,4 +55,4 @@ def svm_stratified_5_fold_cross_validation(data_filename):
     print(f"Average Accuracy: {np.mean(accuracies)}")
 
 # Example usage
-# svm_stratified_5_fold_cross_validation('your_dataset.txt')
+svm_stratified_fold_cross_validation('gcc_submatrix.txt')
