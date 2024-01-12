@@ -28,9 +28,9 @@ def extract_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_
 
                     # Save the extracted submatrix to a text file
                     with open(output_text_file_path, 'w') as output_file:
-                        for row in submatrix:
-                            row_str = ' '.join(map(str, row))
-                            output_file.write(row_str + '\n')
+                        all_elements = ' '.join(map(str, submatrix.ravel()))
+                        output_file.write(all_elements + '\n')
+
                 elif isinstance(item, h5py.Group):
                     # Recursively read group
                     recursively_read_hdf5_group(item, indent_level + 1)
