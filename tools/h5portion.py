@@ -38,7 +38,7 @@ def extract_matrix(hdf5_file_path, protein1_interval, protein2_interval, output_
         recursively_read_hdf5_group(file)
 
 # Example usage
-hdf5_file_path = 'corr/mdigest_results/dyncorr_results_distances_allreplicas.h5'  # Replace with your HDF5 file path
+hdf5_file_path = 'corr/eq_set_1/dyncorr_results_gcc_allreplicas.h5'  # Replace with your HDF5 file path
 protein1_interval = (0, 179)  # Replace with the residue interval for protein 1
 protein2_interval = (375, 385)  # Replace with the residue interval for protein 2
 output_text_file_path = 'output_matrix.txt'  # Replace with your desired output text file path
