@@ -98,12 +98,6 @@ class DynCorrExtractor:
         figure_file_name = f'{savedir}/dyncorr_results_{metrics}_allreplicas.pdf'
         output_file_name = f'{metrics}_{self.submatrix_file_name}'
 
-        if set_number == 0:
-            with open(output_file_name, 'w') as output_file:
-                output_file.write('\n')
-        else:
-            pass
-
         def plot_heatmap(matrix, figure_file_name):
             plt.figure(figsize=(6, 24))
             sns.heatmap(matrix, annot=False, cmap='viridis')
