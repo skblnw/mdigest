@@ -9,10 +9,11 @@ trajectory_paths = ['eq_set_1.xtc', 'neq_set_1.xtc']  # List of trajectories
 output_directory = 'corr'
 
 mds = MDS()
+mds.set_num_replicas(1)
 mds.load_system(topology_path, trajectory_paths)
-mds.align_traj(inMemory=True, selection='name CA')
+mds.align_traj(selection='name CA')
 mds.set_selection('protein and name CA', 'protein')
-mds.stride_trajectory(initial=0, final=-1, step=5)
+mds.stride_trajectory(initial=0, final=-1, step=1)
 
 dyncorr = DynCorr(mds)
 dyncorr.parse_dynamics(scale=True, normalize=True, LMI='gaussian', MI='None', DCC=True, PCC=True)
