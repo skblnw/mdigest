@@ -3,12 +3,12 @@ from MDAnalysis.coordinates.XTC import XTCWriter
 import random
 
 # Load the trajectory
-topology_file = 'your_topology_file.gro'  # Replace with your topology file
-trajectory_file = 'your_trajectory_file.xtc'  # Replace with your trajectory file
+topology_file = 'new_ionized.prot.pdb'  # Replace with your topology file
+trajectory_file = 't2.prot.pf1000ps.xtc'  # Replace with your trajectory file
 u = mda.Universe(topology_file, trajectory_file)
 
 # Given frame index to divide the trajectory
-dividing_frame_index = 500  # Replace with your specific frame index
+dividing_frame_index = 3000  # Replace with your specific frame index
 
 # Determine the number of frames in each segment
 num_frames_eq = dividing_frame_index + 1
@@ -18,8 +18,8 @@ num_frames_neq = len(u.trajectory) - num_frames_eq
 num_selected_frames = 10  # Adjust as needed
 
 # Create random sets of indices for each segment
-random_indices_eq = [random.sample(range(num_frames_eq), num_selected_frames) for _ in range(100)]
-random_indices_neq = [random.sample(range(num_frames_eq, len(u.trajectory)), num_selected_frames) for _ in range(100)]
+random_indices_eq = [random.sample(range(num_frames_eq), num_selected_frames) for _ in range(10)]
+random_indices_neq = [random.sample(range(num_frames_eq, len(u.trajectory)), num_selected_frames) for _ in range(10)]
 
 # Function to write selected frames to a new trajectory
 def write_trajectory(indices, segment, set_number):
