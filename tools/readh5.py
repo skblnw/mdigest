@@ -1,15 +1,24 @@
 import h5py
 
-h5file = 'corr/mdigest_results/dyncorr_results_gcc_allreplicas.h5'
+def hdf5_to_text(hdf5_file_path, output_text_file_path):
+    with h5py.File(hdf5_file_path, 'r') as hdf, open(output_text_file_path, 'w') as output_file:
+        def recursively_read_hdf5_group(hdf_group, indent_level=0):
+            for key in hdf_group.keys():
+                output_file.write('\t' * indent_level + f'Key: {key}\n')
+                item = hdf_group[key]
 
-# Open the HDF5 file
-with h5py.File(h5file, 'r') as file:
-    # List all groups
-    print("Keys: %s" % file.keys())
-    a_group_key = list(file.keys())[0]
+                if isinstance(item, h5py.Dataset):
+                    # Convert dataset to numpy array and write to file
+                    data = item[()]
+                    output_file.write('\t' * indent_level + f'Dataset shape: {data.shape}\n')
+                    output_file.write('\t' * indent_level + f'Data: {data}\n\n')
+                elif isinstance(item, h5py.Group):
+                    # Recursively read group
+                    recursively_read_hdf5_group(item, indent_level + 1)
 
-    # Get the data
-    data = list(file[a_group_key])
+        recursively_read_hdf5_group(hdf)
 
-    # Now, data contains the data stored in the first group.
-    # You can process this data as needed.
+# Example usage
+hdf5_file_path = 'corr/mdigest_results/dyncorr_results_gcc_allreplicas.h5'  # Replace with your HDF5 file path
+output_text_file_path = 'output.txt'  # Replace with your desired output text file path
+hdf5_to_text(hdf5_file_path, output_text_file_path)
