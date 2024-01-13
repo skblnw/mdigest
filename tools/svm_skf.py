@@ -106,13 +106,17 @@ def test_saved_model(model_filename, test_data_filename):
     test_accuracy = accuracy_score(y_test, y_pred)
     print(f"Test accuracy on new dataset: {test_accuracy}")
 
-# Example usage
-model_file = 'best_svm_model.pkl'
+def __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--filelist', type=str, required=True, help='File containing list of training data files')
+    parser.add_argument('--test_data', type=str, required=True, help='File containing test data')
+    args = parser.parse_args()
 
-# train_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
-# train_data_file = 'gcc_submatrix.txt'
-svm_stratified_fold_cross_validation('training_datasets.txt', model_file)
+    filelist_name = args.filelist
 
-test_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t2/gcc_submatrix.txt'
-# test_data_file = 't1/gcc_submatrix.txt'
-test_saved_model(model_file, test_data_file)
+    model_file = 'best_svm_model.pkl'
+
+    svm_stratified_fold_cross_validation(filelist_name, model_file)
+
+    test_data_file = args.test_data
+    test_saved_model(model_file, test_data_file)
