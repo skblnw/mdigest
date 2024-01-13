@@ -84,7 +84,7 @@ def svm_stratified_fold_cross_validation(filelist_name, model_filename):
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend()
-        plt.savefig(f'fold{ii}.pdf')
+        # plt.savefig(f'fold{ii}.pdf')
         # plt.show()
 
         if accuracy > best_accuracy:
