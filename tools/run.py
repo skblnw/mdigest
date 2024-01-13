@@ -23,6 +23,6 @@ if __name__ == "__main__":
     protein2_interval = params.get('protein2_interval')
 
     tool = DynCorrExtractor(topology_file, trajectory_file, dividing_frame_index, num_selected_frames, protein1_interval, protein2_interval)
-    tool.create_new_trajectories()
+    # tool.create_new_trajectories()
     # Run computation for every nth frame of the trajectory
     tool.perform_accumulated_computation()

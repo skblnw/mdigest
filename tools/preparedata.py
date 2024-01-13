@@ -97,7 +97,9 @@ class DynCorrExtractor:
         mds = MDS()
         mds.set_num_replicas(1)
         mds.load_system(self.topology_file, self.trajectory_file)
-        max_num_frames = mds.get_num_frames()
+        mds.stride_trajectory(initial=0, final=-1, step=1)
+        print(mds.final)
+        max_num_frames = mds.total_nframes
         for ii in range(10, max_num_frames, 10):
             savedir = os.path.join(self.output_directory_accumulated, f'{ii}')
             if not os.path.exists(savedir):
