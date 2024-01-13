@@ -68,7 +68,7 @@ def svm_stratified_fold_cross_validation(data_filename, model_filename):
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend()
-        plt.show()
+        # plt.show()
 
         if accuracy > best_accuracy:
             best_accuracy = accuracy
@@ -84,15 +84,20 @@ def svm_stratified_fold_cross_validation(data_filename, model_filename):
 def test_saved_model(model_filename, test_data_filename):
     test_data = load_data(test_data_filename)
     X_test, y_test = split_features_labels(test_data)
+    print(y_test)
 
     loaded_model = joblib.load(model_filename)
-    test_accuracy = accuracy_score(y_test, loaded_model.predict(X_test))
+    y_pred = loaded_model.predict(X_test)
+    print(y_pred)
+    test_accuracy = accuracy_score(y_test, y_pred)
     print(f"Test accuracy on new dataset: {test_accuracy}")
 
 # Example usage
 model_file = 'best_svm_model.pkl'
-train_data_file = 'gcc_submatrix.txt'
+train_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
+# train_data_file = 'gcc_submatrix.txt'
 svm_stratified_fold_cross_validation(train_data_file, model_file)
 
-test_data_file = 'gcc_submatrix.txt'
+test_data_file = '/home/kevin/data/maap/md.a2/EAAGIGILTV-mel8.7q9b/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
+# test_data_file = 't1/gcc_submatrix.txt'
 test_saved_model(model_file, test_data_file)
