@@ -18,12 +18,14 @@ import seaborn as sns
 class DynCorrExtractor:
     """General purpose class handling computation and extraction of different correlation metrics from atomic displacements sampled over MD trajectories."""
 
-    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, num_samples=10):
+    def __init__(self, topology_file, trajectory_file, dividing_frame_index, num_selected_frames, protein1_interval, protein2_interval, num_samples=10):
         # Initialize parameters
         self.topology_file = topology_file
         self.trajectory_file = trajectory_file
         self.dividing_frame_index = dividing_frame_index
         self.num_selected_frames = num_selected_frames
+        self.protein1_interval = protein1_interval
+        self.protein2_interval = protein2_interval
 
         # Load the trajectory using MDAnalysis
         self.u = mda.Universe(topology_file, trajectory_file)
@@ -61,14 +63,14 @@ class DynCorrExtractor:
         for i, indices in enumerate(self.random_indices_eq):
             self.write_trajectory_and_log(trajdir, indices, 'eq', i + 1)
             self.perform_computation(trajdir, 'eq', i + 1)
-            self.extract_matrix('distances', 'eq', i + 1)
-            self.extract_matrix('gcc', 'eq', i + 1)
+            self.extract_matrix('distances', 'eq', i + 1, protein1_interval=self.protein1_interval, protein2_interval=self.protein2_interval)
+            self.extract_matrix('gcc', 'eq', i + 1, protein1_interval=self.protein1_interval, protein2_interval=self.protein2_interval)
 
         for i, indices in enumerate(self.random_indices_neq):
             self.write_trajectory_and_log(trajdir, indices, 'neq', i + 1)
             self.perform_computation(trajdir, 'neq', i + 1)
-            self.extract_matrix('distances', 'neq', i + 1)
-            self.extract_matrix('gcc', 'neq', i + 1)
+            self.extract_matrix('distances', 'neq', i + 1, protein1_interval=self.protein1_interval, protein2_interval=self.protein2_interval)
+            self.extract_matrix('gcc', 'neq', i + 1, protein1_interval=self.protein1_interval, protein2_interval=self.protein2_interval)
 
         print("New trajectories for eq and neq segments have been created, and the frames used are logged.")
 
