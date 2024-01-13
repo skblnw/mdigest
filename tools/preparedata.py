@@ -94,6 +94,9 @@ class DynCorrExtractor:
         # print("Dynamic correlation computations are complete and results are saved.")
 
     def perform_accumulated_computation(self):
+        protein1_interval = self.protein1_interval
+        protein2_interval = self.protein2_interval
+
         mds = MDS()
         mds.set_num_replicas(1)
         mds.load_system(self.topology_file, self.trajectory_file)
@@ -113,6 +116,29 @@ class DynCorrExtractor:
             dyncorr = DynCorr(mds)
             dyncorr.parse_dynamics(scale=True, normalize=True, LMI='gaussian', MI='None', DCC=False, PCC=False)
             dyncorr.save_class(file_name_root=os.path.join(savedir, f'dyncorr_results'))
+
+            for metrics in ['gcc', 'distances']:
+                output_file_name = os.path.join(self.output_directory_accumulated, f'{metrics}_{self.submatrix_file_name}')
+                with h5py.File(f'{savedir}/dyncorr_results_{metrics}_allreplicas.h5', 'r') as file:
+                    def recursively_read_hdf5_group(hdf_group, indent_level=0):
+                        for key in hdf_group.keys():
+                            item = hdf_group[key]
+
+                            if isinstance(item, h5py.Dataset):
+                                # Convert dataset to numpy array and write to file
+                                matrix = item[()]
+                                submatrix = matrix[protein1_interval[0]:protein1_interval[1], protein2_interval[0]:protein2_interval[1]]
+
+                                # Save the extracted submatrix to a text file
+                                with open(output_file_name, 'a') as output_file:
+                                    all_elements = '1 ' + ' '.join(map(str, submatrix.ravel()))
+                                    output_file.write(all_elements + '\n')
+                            elif isinstance(item, h5py.Group):
+                                # Recursively read group
+                                recursively_read_hdf5_group(item, indent_level + 1)
+
+                    recursively_read_hdf5_group(file)
+
 
     def extract_matrix(self, metrics, segment, set_number, protein1_interval=(0, 179), protein2_interval=(375, 385)):
         savedir = os.path.join(self.output_directory, f'{segment}_set_{set_number}')

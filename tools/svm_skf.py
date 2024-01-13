@@ -110,9 +110,10 @@ def test_saved_model(model_filename, test_data_filename):
 
 def test_saved_model_on_accumulated_data(model_filename):
     results = []
+    directory = 'corr_accumulated'
 
     # Loop over all subdirectories in the directory, sorted in human-readable order
-    for subdirectory in sorted(os.listdir('corr_accumulated')):
+    for subdirectory in sorted(os.listdir(directory)):
         subdirectory_path = os.path.join(directory, subdirectory)
         if os.path.isdir(subdirectory_path):
             test_data_filepath = os.path.join(subdirectory_path, 'dyncorr_results_gcc_allreplicas.h5')
