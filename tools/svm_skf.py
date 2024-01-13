@@ -16,6 +16,20 @@ def load_data(filename):
             data.append((features, label))
     return data
 
+def load_data_from_filelist(filelist_name):
+    all_data = []
+    with open(filelist_name, 'r') as filelist:
+        for filename in filelist:
+            filename = filename.strip()  # Remove any leading/trailing whitespace or newline characters
+            with open(filename, 'r') as file:
+                for line in file:
+                    parts = line.strip().split()
+                    label = int(parts[0])
+                    features = [float(x) for x in parts[1:]]
+                    all_data.append((features, label))
+    return all_data
+
+
 # Split dataset into features and labels
 def split_features_labels(data):
     features = [x[0] for x in data]
@@ -23,9 +37,9 @@ def split_features_labels(data):
     return np.array(features), np.array(labels)
 
 # Main function for SVM with Stratified 5-Fold cross-validation
-def svm_stratified_fold_cross_validation(data_filename, model_filename):
+def svm_stratified_fold_cross_validation(filelist_name, model_filename):
     # Load and prepare data
-    data = load_data(data_filename)
+    data = load_data_from_filelist(filelist_name)
     X, y = split_features_labels(data)
 
     # Define Stratified 5-Fold cross validation
@@ -94,9 +108,10 @@ def test_saved_model(model_filename, test_data_filename):
 
 # Example usage
 model_file = 'best_svm_model.pkl'
-train_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
+
+# train_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
 # train_data_file = 'gcc_submatrix.txt'
-svm_stratified_fold_cross_validation(train_data_file, model_file)
+svm_stratified_fold_cross_validation('training_datasets.txt', model_file)
 
 test_data_file = '/home/kevin/data/maap/md.a2/EAAGIGILTV-mel8.7q9b/hlaonly/analysis/mdigest/t1/gcc_submatrix.txt'
 # test_data_file = 't1/gcc_submatrix.txt'
