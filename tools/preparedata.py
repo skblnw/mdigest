@@ -41,6 +41,7 @@ class DynCorrExtractor:
         self.submatrix_file_name = 'submatrix.txt'
         self.traj_directory = 'traj'
         self.output_directory = 'corr'
+        self.output_directory_accumulated = 'corr_accumulated'
 
     def write_trajectory_and_log(self, trajdir, indices, segment, set_number):
         file_name = f'{trajdir}/{segment}_set_{set_number}.xtc'
@@ -91,6 +92,26 @@ class DynCorrExtractor:
         dyncorr.save_class(file_name_root=os.path.join(savedir, 'dyncorr_results'))
 
         # print("Dynamic correlation computations are complete and results are saved.")
+
+    def perform_accumulated_computation(self):
+        mds = MDS()
+        mds.set_num_replicas(1)
+        mds.load_system(self.topology_file, self.trajectory_file)
+        max_num_frames = mds.get_num_frames()
+        for ii in range(10, max_num_frames, 10):
+            savedir = os.path.join(self.output_directory_accumulated, f'{ii}')
+            if not os.path.exists(savedir):
+                os.makedirs(savedir)
+            
+            mds = MDS()
+            mds.set_num_replicas(1)
+            mds.load_system(self.topology_file, self.trajectory_file)
+            mds.align_traj(selection='name CA')
+            mds.set_selection('protein and name CA', 'protein')
+            mds.stride_trajectory(initial=0, final=ii, step=1)
+            dyncorr = DynCorr(mds)
+            dyncorr.parse_dynamics(scale=True, normalize=True, LMI='gaussian', MI='None', DCC=False, PCC=False)
+            dyncorr.save_class(file_name_root=os.path.join(savedir, f'dyncorr_results'))
 
     def extract_matrix(self, metrics, segment, set_number, protein1_interval=(0, 179), protein2_interval=(375, 385)):
         savedir = os.path.join(self.output_directory, f'{segment}_set_{set_number}')
