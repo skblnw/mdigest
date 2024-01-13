@@ -54,7 +54,7 @@ def svm_stratified_fold_cross_validation(filelist_name, model_filename):
     auc_scores = []
 
     # Perform Stratified 5-Fold cross-validation
-    for train_index, test_index in skf.split(X, y):
+    for ii, (train_index, test_index) in enumerate(skf.split(X, y)):
         X_train, X_test = X[train_index], X[test_index]
         y_train, y_test = y[train_index], y[test_index]
 
@@ -84,6 +84,7 @@ def svm_stratified_fold_cross_validation(filelist_name, model_filename):
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend()
+        plt.savefig(f'fold{ii}.pdf')
         # plt.show()
 
         if accuracy > best_accuracy:
@@ -113,23 +114,17 @@ def test_saved_model_on_accumulated_data(model_filename):
     directory = 'corr_accumulated'
 
     # Loop over all subdirectories in the directory, sorted in human-readable order
-    for subdirectory in sorted(os.listdir(directory)):
-        subdirectory_path = os.path.join(directory, subdirectory)
-        if os.path.isdir(subdirectory_path):
-            test_data_filepath = os.path.join(subdirectory_path, 'dyncorr_results_gcc_allreplicas.h5')
-            test_data = load_data(test_data_filepath)
-            X_test, y_test = split_features_labels(test_data)
+    test_data_filepath = os.path.join(directory, 'gcc_submatrix.txt')
+    test_data = load_data(test_data_filepath)
+    X_test, y_test = split_features_labels(test_data)
 
-            loaded_model = joblib.load(model_filename)
-            y_pred = loaded_model.predict(X_test)
-            test_accuracy = accuracy_score(y_test, y_pred)
-
-            results.append(f"{subdirectory}: {test_accuracy}\n")
+    loaded_model = joblib.load(model_filename)
+    y_pred = loaded_model.predict(X_test)
 
     # Write results to a text file
     with open('svm_results_accumulated.txt', 'w') as file:
-        for line in results:
-            file.write(line)
+        for pred in y_pred:
+            file.write(f"{pred}\n")
 
 
 if __name__ == "__main__":
