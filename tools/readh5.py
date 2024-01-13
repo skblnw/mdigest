@@ -19,6 +19,6 @@ def hdf5_to_text(hdf5_file_path, output_text_file_path):
         recursively_read_hdf5_group(hdf)
 
 # Example usage
-hdf5_file_path = 'corr/mdigest_results/dyncorr_results_gcc_allreplicas.h5'  # Replace with your HDF5 file path
+hdf5_file_path = 'dyncorr_results_gcc_allreplicas.h5'  # Replace with your HDF5 file path
 output_text_file_path = 'output.txt'  # Replace with your desired output text file path
 hdf5_to_text(hdf5_file_path, output_text_file_path)
