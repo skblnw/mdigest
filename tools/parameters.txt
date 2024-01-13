@@ -1,5 +1,5 @@
 topology_file        = ../new_ionized.prot.pdb
-trajectory_file      = t1.prot.pf10000ps.xtc
+trajectory_file      = traj.xtc
 protein1_interval    = (0, 179)
 protein2_interval    = (375, 385)
 num_selected_frames  = 10

@@ -113,6 +113,6 @@ model_file = 'best_svm_model.pkl'
 # train_data_file = 'gcc_submatrix.txt'
 svm_stratified_fold_cross_validation('training_datasets.txt', model_file)
 
-test_data_file = '/home/kevin/data/maap/md.a2/EAAGIGILTV-mel8.7q9b/hlaonly/analysis/mdigest/t2/gcc_submatrix.txt'
+test_data_file = '/home/kevin/data/maap/md.a2/ILAKFLHWL-ila1.5men/hlaonly/analysis/mdigest/t2/gcc_submatrix.txt'
 # test_data_file = 't1/gcc_submatrix.txt'
 test_saved_model(model_file, test_data_file)
