@@ -4,6 +4,7 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
 import joblib  # for saving the model
+import argparse
 
 # Load your dataset
 def load_data(filename):
@@ -82,7 +83,7 @@ def svm_stratified_fold_cross_validation(filelist_name, model_filename):
         plt.ylabel('True Positive Rate')
         plt.title('Receiver Operating Characteristic (ROC) Curve')
         plt.legend()
-        plt.show()
+        # plt.show()
 
         if accuracy > best_accuracy:
             best_accuracy = accuracy
@@ -98,15 +99,15 @@ def svm_stratified_fold_cross_validation(filelist_name, model_filename):
 def test_saved_model(model_filename, test_data_filename):
     test_data = load_data(test_data_filename)
     X_test, y_test = split_features_labels(test_data)
-    print(y_test)
+    # print(y_test)
 
     loaded_model = joblib.load(model_filename)
     y_pred = loaded_model.predict(X_test)
-    print(y_pred)
+    # print(y_pred)
     test_accuracy = accuracy_score(y_test, y_pred)
     print(f"Test accuracy on new dataset: {test_accuracy}")
 
-def __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--filelist', type=str, required=True, help='File containing list of training data files')
     parser.add_argument('--test_data', type=str, required=True, help='File containing test data')
