@@ -59,7 +59,7 @@ def svm_stratified_fold_cross_validation(data_filename):
 
         # Plot ROC curve
         fpr, tpr, thresholds = roc_curve(y_test, y_scores)
-        plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {auc:.2f})')
+        plt.plot(fpr, tpr, color='blue', label=f'ROC Curve (AUC = {auc_score:.2f})')
         plt.plot([0, 1], [0, 1], color='grey', linestyle='--')
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')

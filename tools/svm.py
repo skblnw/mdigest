@@ -74,4 +74,4 @@ def svm_fold_cross_validation(data_filename):
     print(f"Average Accuracy: {np.mean(accuracies)}")
 
 # Example usage
-svm_fold_cross_validation('gcc_submatrix.txt')
+svm_fold_cross_validation('distances_submatrix.txt')
