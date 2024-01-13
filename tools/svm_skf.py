@@ -3,6 +3,7 @@ from sklearn import svm
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
+import joblib  # for saving the model
 
 # Load your dataset
 def load_data(filename):
@@ -22,7 +23,7 @@ def split_features_labels(data):
     return np.array(features), np.array(labels)
 
 # Main function for SVM with Stratified 5-Fold cross-validation
-def svm_stratified_fold_cross_validation(data_filename):
+def svm_stratified_fold_cross_validation(data_filename, model_filename):
     # Load and prepare data
     data = load_data(data_filename)
     X, y = split_features_labels(data)
@@ -31,6 +32,8 @@ def svm_stratified_fold_cross_validation(data_filename):
     skf = StratifiedKFold(n_splits=5)
 
     # Initialize accuracy and AUC lists
+    best_model = None
+    best_accuracy = 0
     accuracies = []
     auc_scores = []
 
@@ -40,18 +43,18 @@ def svm_stratified_fold_cross_validation(data_filename):
         y_train, y_test = y[train_index], y[test_index]
 
         # Create SVM classifier with probability estimation
-        clf = svm.SVC(kernel='linear', probability=True)
+        model = svm.SVC(kernel='linear', probability=True)
 
         # Train the model
-        clf.fit(X_train, y_train)
+        model.fit(X_train, y_train)
 
         # Make predictions and compute accuracy
-        y_pred = clf.predict(X_test)
+        y_pred = model.predict(X_test)
         accuracy = accuracy_score(y_test, y_pred)
         accuracies.append(accuracy)
 
         # Compute AUC-ROC
-        y_scores = clf.predict_proba(X_test)[:, 1]
+        y_scores = model.predict_proba(X_test)[:, 1]
         auc_score = roc_auc_score(y_test, y_scores)
         auc_scores.append(auc_score)
 
@@ -67,9 +70,29 @@ def svm_stratified_fold_cross_validation(data_filename):
         plt.legend()
         plt.show()
 
+        if accuracy > best_accuracy:
+            best_accuracy = accuracy
+            best_model = model
+
     # Print average accuracy and AUC
     print(f"Average Accuracy: {np.mean(accuracies)}")
     print(f"Average AUC: {np.mean(auc_scores)}")
+    joblib.dump(best_model, model_filename)
+    print(f"Best model saved with accuracy: {best_accuracy}")
+
+# Function to test the saved model on a new dataset
+def test_saved_model(model_filename, test_data_filename):
+    test_data = load_data(test_data_filename)
+    X_test, y_test = split_features_labels(test_data)
+
+    loaded_model = joblib.load(model_filename)
+    test_accuracy = accuracy_score(y_test, loaded_model.predict(X_test))
+    print(f"Test accuracy on new dataset: {test_accuracy}")
 
 # Example usage
-svm_stratified_fold_cross_validation('gcc_submatrix.txt')
+model_file = 'best_svm_model.pkl'
+train_data_file = 'gcc_submatrix.txt'
+svm_stratified_fold_cross_validation(train_data_file, model_file)
+
+test_data_file = 'gcc_submatrix.txt'
+test_saved_model(model_file, test_data_file)
