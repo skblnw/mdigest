@@ -5,6 +5,7 @@ from sklearn.metrics import accuracy_score, roc_auc_score, roc_curve
 import matplotlib.pyplot as plt
 import joblib  # for saving the model
 import argparse
+import os
 
 # Load your dataset
 def load_data(filename):
@@ -107,6 +108,29 @@ def test_saved_model(model_filename, test_data_filename):
     test_accuracy = accuracy_score(y_test, y_pred)
     print(f"Test accuracy on new dataset: {test_accuracy}")
 
+def test_saved_model_on_accumulated_data(model_filename):
+    results = []
+
+    # Loop over all subdirectories in the directory, sorted in human-readable order
+    for subdirectory in sorted(os.listdir('corr_accumulated')):
+        subdirectory_path = os.path.join(directory, subdirectory)
+        if os.path.isdir(subdirectory_path):
+            test_data_filepath = os.path.join(subdirectory_path, 'dyncorr_results_gcc_allreplicas.h5')
+            test_data = load_data(test_data_filepath)
+            X_test, y_test = split_features_labels(test_data)
+
+            loaded_model = joblib.load(model_filename)
+            y_pred = loaded_model.predict(X_test)
+            test_accuracy = accuracy_score(y_test, y_pred)
+
+            results.append(f"{subdirectory}: {test_accuracy}\n")
+
+    # Write results to a text file
+    with open('svm_results_accumulated.txt', 'w') as file:
+        for line in results:
+            file.write(line)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--filelist', type=str, required=True, help='File containing list of training data files')
@@ -117,7 +141,12 @@ if __name__ == "__main__":
 
     model_file = 'best_svm_model.pkl'
 
-    svm_stratified_fold_cross_validation(filelist_name, model_file)
+    # Perform SVM with Stratified 5-Fold cross-validation
+    # Find the best model and save it
+    # Test it on a new dataset
+    # svm_stratified_fold_cross_validation(filelist_name, model_file)
+    # test_data_file = args.test_data
+    # test_saved_model(model_file, test_data_file)
 
-    test_data_file = args.test_data
-    test_saved_model(model_file, test_data_file)
+    # test the saved model on the accumulated data
+    test_saved_model_on_accumulated_data(model_file)
